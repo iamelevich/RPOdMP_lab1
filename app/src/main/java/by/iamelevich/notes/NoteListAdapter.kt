@@ -15,6 +15,7 @@ import by.iamelevich.notes.activity.NoteActivity
 import by.iamelevich.notes.activity.NoteActivity.Companion.NOTE_ID
 import by.iamelevich.notes.activity.NoteActivity.Companion.NOTE_TEXT
 import by.iamelevich.notes.db.entity.Note
+import java.text.DateFormat
 
 class NoteListAdapter internal constructor(
     private val context: Context,
@@ -26,6 +27,7 @@ class NoteListAdapter internal constructor(
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteItemView: TextView = itemView.findViewById(R.id.textView)
+        val updatedAtItemView: TextView = itemView.findViewById(R.id.updatedAt)
         val noteDeleteBtn: ImageButton = itemView.findViewById(R.id.delete_btn)
     }
 
@@ -38,6 +40,11 @@ class NoteListAdapter internal constructor(
         val current = notes[position]
         val text = if (current.text.length > 50) current.text.substring(0, 50) + "..." else current.text
         holder.noteItemView.text = text.replace('\n', ' ')
+        holder.updatedAtItemView.text = context.getString(
+            R.string.updatedAt_string,
+            DateFormat.getDateInstance().format(current.updatedAt!!),
+            DateFormat.getTimeInstance().format(current.updatedAt!!)
+        )
         holder.noteItemView.setOnClickListener {
             val intent = Intent(context, NoteActivity::class.java);
             intent.putExtra(NOTE_ID, current.id)

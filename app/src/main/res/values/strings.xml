@@ -4,4 +4,5 @@
     <string name="delete_note_btn">Удалить заметку</string>
     <string name="menu_search">Поиск</string>
     <string name="save_note">Сохранить</string>
+    <string name="updatedAt_string">Изменено: %1$s %2$s</string>
 </resources>
