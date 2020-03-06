@@ -3,6 +3,7 @@ package by.iamelevich.notes.db.repository
 import androidx.lifecycle.LiveData
 import by.iamelevich.notes.db.dao.NoteDao
 import by.iamelevich.notes.db.entity.Note
+import java.util.*
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
@@ -29,6 +30,7 @@ class NoteRepository(private val noteDao: NoteDao) {
     }
 
     suspend fun update(note: Note) {
+        note.updatedAt = Date()
         noteDao.update(note)
     }
 }

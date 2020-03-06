@@ -1,7 +1,6 @@
 package by.iamelevich.notes
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import by.iamelevich.notes.db.NoteRoomDatabase
 import by.iamelevich.notes.db.entity.Note
@@ -24,7 +23,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     init {
         // Gets reference to WordDao from WordRoomDatabase to construct
         // the correct WordRepository.
-        val noteDao = NoteRoomDatabase.getDatabase(application, viewModelScope).noteDao()
+        val noteDao = NoteRoomDatabase.getDatabase(application).noteDao()
         repository =
             NoteRepository(
                 noteDao

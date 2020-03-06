@@ -4,11 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import by.iamelevich.notes.db.converters.DateConverter
 import by.iamelevich.notes.db.dao.NoteDao
 import by.iamelevich.notes.db.entity.Note
-import kotlinx.coroutines.CoroutineScope
+import java.util.*
 
-@Database(entities = arrayOf(Note::class), version = 1, exportSchema = true)
+@Database(entities = arrayOf(Note::class), version = 2, exportSchema = true)
+@TypeConverters(value = arrayOf(DateConverter::class))
 abstract class NoteRoomDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
@@ -20,8 +25,7 @@ abstract class NoteRoomDatabase : RoomDatabase() {
         private var INSTANCE: NoteRoomDatabase? = null
 
         fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
+            context: Context
         ): NoteRoomDatabase {
             val tempInstance =
                 INSTANCE
@@ -33,10 +37,19 @@ abstract class NoteRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     NoteRoomDatabase::class.java,
                     "Note_database"
-                ).build()
+                ).addMigrations(MIGRATION_1_2).build()
                 INSTANCE = instance
                 return instance
             }
         }
+    }
+}
+
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE notes ADD COLUMN createdAt INTEGER")
+        database.execSQL("ALTER TABLE notes ADD COLUMN updatedAt INTEGER")
+        val now = Date().time
+        database.execSQL("UPDATE notes SET createdAt = ?, updatedAt = ?", arrayOf(now, now))
     }
 }
