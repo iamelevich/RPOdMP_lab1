@@ -7,10 +7,10 @@ import by.iamelevich.notes.db.entity.Note
 @Dao
 interface NoteDao {
 
-    @Query("SELECT * FROM notes ORDER BY id DESC")
+    @Query("SELECT * FROM notes ORDER BY updatedAt DESC")
     fun getLast(): LiveData<List<Note>>
 
-    @Query("SELECT * FROM notes WHERE text LIKE '%' || :search || '%' ORDER BY id DESC")
+    @Query("SELECT * FROM notes WHERE text LIKE '%' || :search || '%' ORDER BY updatedAt DESC")
     fun getByText(search: String): LiveData<List<Note>>
 
     @Query("SELECT * FROM notes WHERE id = :id")
