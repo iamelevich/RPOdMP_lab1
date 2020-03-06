@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Заметки</string>
+    <string name="new_note_input_hint">Введите текст заметки</string>
+    <string name="delete_note_btn">Удалить заметку</string>
+    <string name="menu_search">Поиск</string>
+    <string name="save_note">Сохранить</string>
+</resources>
