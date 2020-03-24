@@ -3,7 +3,6 @@ package by.iamelevich.notes.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import by.iamelevich.notes.R
 import by.iamelevich.notes.NoteListAdapter
 import by.iamelevich.notes.NoteViewModel
 import by.iamelevich.notes.db.entity.Note
-import com.amitshekhar.DebugDB
 import org.jetbrains.anko.doAsync
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -54,23 +52,28 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == NOTE_ACTIVITY_NEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(NoteActivity.NOTE_TEXT)?.let {
-                val note = Note(it)
-                noteViewModel.insert(note)
+            val title: String? = data?.getStringExtra(NoteActivity.NOTE_TITLE)
+            var text: String? = data?.getStringExtra(NoteActivity.NOTE_TEXT)
+            if (text === null) {
+                text = ""
             }
+            val note = Note(title, text)
+            noteViewModel.insert(note)
         } else if (requestCode == NOTE_ACTIVITY_EDIT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             doAsync {
-                var note: Note? = data?.getIntExtra(NoteActivity.NOTE_ID, 0)?.let {
-                    return@let noteViewModel.getById(it)
+                val id = data?.getIntExtra(NoteActivity.NOTE_ID, 0)
+                val title = data?.getStringExtra(NoteActivity.NOTE_TITLE)
+                var text = data?.getStringExtra(NoteActivity.NOTE_TEXT)
+                if (text === null) {
+                    text = ""
                 }
-                data?.getStringExtra(NoteActivity.NOTE_TEXT)?.let {
-                    if (note == null) {
-                        note = Note(it)
-                    } else {
-                        note!!.text = it
-                    }
-                    noteViewModel.update(note!!)
+                var note = id?.let { noteViewModel.getById(it) }
+                if (note === null) {
+                    note = Note(title, text!!)
                 }
+                note.title = title
+                note.text = text!!
+                noteViewModel.update(note)
             }
         }
     }

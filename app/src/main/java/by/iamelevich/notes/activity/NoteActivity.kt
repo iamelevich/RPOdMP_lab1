@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_note.*
 class NoteActivity : AppCompatActivity() {
 
     private lateinit var editNoteView: EditText
+    private lateinit var editTitleView: EditText
     private var id: Int = 0
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,10 +23,14 @@ class NoteActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        editNoteView = findViewById(R.id.editText)
         intent.getIntExtra(NOTE_ID, 0).let {
             id = it
         }
+        editTitleView = findViewById(R.id.editTitle)
+        intent.getStringExtra(NOTE_TITLE)?.let {
+            editTitleView.setText(it)
+        }
+        editNoteView = findViewById(R.id.editText)
         intent.getStringExtra(NOTE_TEXT)?.let {
             editNoteView.setText(it)
         }
@@ -52,10 +57,12 @@ class NoteActivity : AppCompatActivity() {
                 if (TextUtils.isEmpty(editNoteView.text)) {
                     setResult(Activity.RESULT_CANCELED, replyIntent)
                 } else {
+                    val title = editTitleView.text.toString()
+                    replyIntent.putExtra(NOTE_TITLE, title)
                     val note = editNoteView.text.toString()
+                    replyIntent.putExtra(NOTE_TEXT, note)
                     if (id != 0)
                         replyIntent.putExtra(NOTE_ID, id)
-                    replyIntent.putExtra(NOTE_TEXT, note)
                     setResult(Activity.RESULT_OK, replyIntent)
                 }
                 finish()
@@ -66,7 +73,8 @@ class NoteActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val NOTE_TEXT = "by.iamelevich.notes.NOTE_TEXT"
         const val NOTE_ID = "by.iamelevich.notes.NOTE_ID"
+        const val NOTE_TITLE = "by.iamelevich.notes.NOTE_TITLE"
+        const val NOTE_TEXT = "by.iamelevich.notes.NOTE_TEXT"
     }
 }
