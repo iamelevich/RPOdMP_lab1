@@ -53,9 +53,9 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == NOTE_ACTIVITY_NEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val title: String? = data?.getStringExtra(NoteActivity.NOTE_TITLE)
-            var text: String? = data?.getStringExtra(NoteActivity.NOTE_TEXT)
-            if (text === null) {
-                text = ""
+            var text = ""
+            data?.getStringExtra(NoteActivity.NOTE_TEXT)?.let {
+                text = it
             }
             val note = Note(title, text)
             noteViewModel.insert(note)
@@ -63,16 +63,16 @@ class MainActivity : AppCompatActivity() {
             doAsync {
                 val id = data?.getIntExtra(NoteActivity.NOTE_ID, 0)
                 val title = data?.getStringExtra(NoteActivity.NOTE_TITLE)
-                var text = data?.getStringExtra(NoteActivity.NOTE_TEXT)
-                if (text === null) {
-                    text = ""
+                var text = ""
+                data?.getStringExtra(NoteActivity.NOTE_TEXT).let {
+                    text = it!!
                 }
                 var note = id?.let { noteViewModel.getById(it) }
                 if (note === null) {
-                    note = Note(title, text!!)
+                    note = Note(title, text)
                 }
                 note.title = title
-                note.text = text!!
+                note.text = text
                 noteViewModel.update(note)
             }
         }

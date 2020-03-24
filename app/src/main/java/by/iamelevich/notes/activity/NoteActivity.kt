@@ -54,17 +54,13 @@ class NoteActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.save_note -> {
                 val replyIntent = Intent()
-                if (TextUtils.isEmpty(editNoteView.text)) {
-                    setResult(Activity.RESULT_CANCELED, replyIntent)
-                } else {
-                    val title = editTitleView.text.toString()
-                    replyIntent.putExtra(NOTE_TITLE, title)
-                    val note = editNoteView.text.toString()
-                    replyIntent.putExtra(NOTE_TEXT, note)
-                    if (id != 0)
-                        replyIntent.putExtra(NOTE_ID, id)
-                    setResult(Activity.RESULT_OK, replyIntent)
-                }
+                val title = editTitleView.text.toString()
+                replyIntent.putExtra(NOTE_TITLE, title)
+                val note = editNoteView.text.toString()
+                replyIntent.putExtra(NOTE_TEXT, note)
+                if (id != 0)
+                    replyIntent.putExtra(NOTE_ID, id)
+                setResult(Activity.RESULT_OK, replyIntent)
                 finish()
                 true
             }

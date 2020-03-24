@@ -40,7 +40,7 @@ class NoteListAdapter internal constructor(
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val current = notes[position]
         var title = current.title
-        if (title === null) {
+        if (title == null || title == "") {
             title = if (current.text.length > 50) current.text.substring(0, 50) + "..." else current.text
         }
         holder.noteItemView.text = title.replace('\n', ' ')
